@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epicor-Wpf-Analizer", "Epicor-Wpf-Analizer\Epicor-Wpf-Analizer.csproj", "{01054663-5CAD-43B1-98B1-3F6B9F07A8C8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01054663-5CAD-43B1-98B1-3F6B9F07A8C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01054663-5CAD-43B1-98B1-3F6B9F07A8C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01054663-5CAD-43B1-98B1-3F6B9F07A8C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01054663-5CAD-43B1-98B1-3F6B9F07A8C8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {190E437A-614C-421B-B581-E82F5F553489}
+	EndGlobalSection
+EndGlobal
