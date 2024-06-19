@@ -11,7 +11,7 @@ using Epicor_Wpf_Analizer.Data;
 
 namespace Epicor_Wpf_Analizer.Services
 {
-    public class QueueService : IQueueServices
+    public class QueueServices : IQueueServices
     {
 
         private string connstring = ConfigurationManager.ConnectionStrings["EpicoConnectionString"].ConnectionString;
