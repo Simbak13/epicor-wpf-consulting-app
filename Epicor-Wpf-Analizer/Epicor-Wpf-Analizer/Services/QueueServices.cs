@@ -23,7 +23,7 @@ namespace Epicor_Wpf_Analizer.Services
             List<SupportCallOpen> list = new List<SupportCallOpen>();
             try
             {
-                query = QueueSQL.QueueQuery();
+                query = QueueSQL.QueueQuery(null, rowsNumber);
                 using (con = new SqlConnection(connstring)) 
                 {
                     await con.OpenAsync();

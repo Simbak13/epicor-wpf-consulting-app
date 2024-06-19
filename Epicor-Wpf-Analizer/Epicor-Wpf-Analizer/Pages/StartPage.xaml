@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-         xmlns:mv="clr-namespace:Epicor_Wpf_Analizer.ViewModel"
+        xmlns:mv="clr-namespace:Epicor_Wpf_Analizer.ViewModel"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:ge="clr-namespace:SourceChord.GridExtra;assembly=GridExtra.Wpf"
         xmlns:local="clr-namespace:Epicor_Wpf_Analizer.Pages"
         mc:Ignorable="d"
         Title="StartPage" Height="450" Width="800">
@@ -12,15 +14,227 @@
         <mv:StartPageViewModel />
     </Window.DataContext>
 
+    <Window.Resources>
+
+        <SolidColorBrush x:Key="SelectedRowColor" Color="LightBlue" />
+
+        <Style TargetType="DataGridRow">
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SelectedRowColor}" />
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="dgStyle" TargetType="{x:Type DataGrid}">
+            <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+            <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
+            <Setter Property="EnableColumnVirtualization" Value='True' />
+            <Setter Property="EnableRowVirtualization"  Value="True" />
+            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="True"/>
+            <Setter Property="ItemsSource" Value="{Binding QueueList,IsAsync=True}"/>
+            <Setter Property="SelectedItem" Value="{Binding SelectedCall}"/>
+            <Setter Property="AutoGenerateColumns" Value="True"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="CanUserResizeColumns" Value="True"/>
+            <Setter Property="CanUserSortColumns" Value="True"/>
+            <!--<Setter Property="GridLinesVisibility" Value="All"/>-->
+            <Setter Property="IsReadOnly" Value="True"/>
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                    <Setter Property="Cursor" Value="Wait"/>
+                    <Setter Property="Background" Value="LightGray"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+
+        <Style x:Key="lvStyle" TargetType="{x:Type ListView}">
+            <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+            <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Standard"/>
+            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="True"/>
+            <Setter Property="ListView.ItemsSource" Value="{Binding QueueList,IsAsync=True}"/>
+            <Setter Property="ListView.View">
+                <Setter.Value>
+                    <GridView>
+                        <GridViewColumn Header="SupportCallId" Width="100" DisplayMemberBinding="{Binding QueueList.SupportCallID}" />
+                        <GridViewColumn Header="Assign To" DisplayMemberBinding="{Binding QueueList.AssignTo}" />
+                        <GridViewColumn Header="Number" DisplayMemberBinding="{Binding QueueList.Number}" />
+                        <!-- Agrega las demás columnas según tu modelo SupportCallOpen -->
+                    </GridView>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                    <Setter Property="ListView.Cursor" Value="Wait"/>
+                    <Setter Property="ListView.Background" Value="LightGray"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+
 
     <Grid>
 
-        <StackPanel>
-            <TextBlock Text="{Binding TotalRecords}"  Margin="0 5"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <md:Card Padding="5" 
+                 Margin="15"
+                md:ElevationAssist.Elevation="Dp4">
+                <StackPanel>
+                    <ge:ResponsiveGrid>
 
-            <DataGrid ItemsSource="{Binding QueueList,IsAsync=True}" />
+                        <Border ge:ResponsiveGrid.XS="12"  ge:ResponsiveGrid.SM="6" Margin="0 5 ">
 
-        </StackPanel>
-        
+                            <StackPanel
+                                Orientation="Horizontal">
+
+                                <TextBox 
+                                        Text="{Binding SearchParam}"
+                                        Padding="6"
+                                        Width="300"
+                                        md:HintAssist.Hint="Search..."
+                                        md:HintAssist.IsFloating="True" 
+                                       Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+
+
+                            </StackPanel>
+
+                        </Border>
+                        
+                        <!--REPORT BTN-->
+                        <Border ge:ResponsiveGrid.XS="12"  ge:ResponsiveGrid.SM="6" Margin="0 5 ">
+                            <StackPanel 
+                              Orientation="Horizontal" HorizontalAlignment="Right">
+
+                                <Button
+                                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                 Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                                 ToolTip="MaterialDesignOutlinedButton"
+                                   Command="{Binding ExcelReportCommand}">
+                                    <md:PackIcon Kind="MicrosoftExcel" Width="28" Height="28" />
+                                </Button>
+
+                                <Button
+                                 Margin="8 0 0 0"
+                                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                                ToolTip="MaterialDesignOutlinedButton" >
+                                    <md:PackIcon Kind="FilePdfBox" Width="28" Height="28" />
+                                </Button>
+
+
+                            </StackPanel>
+                        </Border>
+                        <!--REPORT BTN-->
+
+                        <!--DATAGRID-->
+                        <Border ge:ResponsiveGrid.XS="12"  ge:ResponsiveGrid.SM="12"  Margin="5">
+
+
+
+
+
+                            <!--<ListView Style="{DynamicResource lvStyle}" />-->
+
+                            <!--<ListView Style="{DynamicResource lvStyle}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="ID" DisplayMemberBinding="{Binding SupportCallID}" />
+                                        <GridViewColumn Header="Assign To" DisplayMemberBinding="{Binding AssignTo}" />
+                                        <GridViewColumn Header="Number" DisplayMemberBinding="{Binding Number}" />
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>-->
+                            
+                            
+                            
+                            
+                            <DataGrid Style="{DynamicResource dgStyle}"
+                                       RowStyle="{StaticResource {x:Type DataGridRow}}"/>
+
+                            <!--<DataGrid Style="{DynamicResource dgStyle}"
+                                       RowStyle="{StaticResource {x:Type DataGridRow}}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding SupportCallID}" />
+                                    <DataGridTextColumn Header="Assign To" Binding="{Binding AssignTo}" />
+                                    <DataGridTextColumn Header="Number" Binding="{Binding Number}" />
+                                    <DataGridTextColumn Header="Impact" Binding="{Binding Impact}" />
+                                    <DataGridTextColumn Header="Urgency" Binding="{Binding Urgency}" />
+                                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
+                                    <DataGridTextColumn Header="Types" Binding="{Binding Types}" />
+                                    <DataGridTextColumn Header="Open By" Binding="{Binding OpenBy}" />
+                                    <DataGridTextColumn Header="Open Date" Binding="{Binding OpenDate}" />
+                                    <DataGridTextColumn Header="Days" Binding="{Binding Days}" />
+                                    <DataGridTextColumn Header="Summary" Binding="{Binding Summary}" />
+                                    <DataGridTextColumn Header="Organization" Binding="{Binding Organization}" />
+                                    <DataGridTextColumn Header="Groups" Binding="{Binding Groups}" />
+                                </DataGrid.Columns>
+                                <DataGrid.ContextMenu>
+                                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="Select Registro"
+        Command="{Binding SelectCommand}"
+        CommandParameter="{Binding SelectedItem}" />
+                                    </ContextMenu>
+                                </DataGrid.ContextMenu>
+                            </DataGrid>-->
+
+
+                            <!--<DataGrid 
+                                ItemsSource="{Binding QueueList,IsAsync=True }"
+                                AutoGenerateColumns="False"
+                                SelectedItem="{Binding SelectedCall, Mode=TwoWay}"
+                                SelectionMode="Single"
+                                CanUserAddRows="False"
+                                CanUserDeleteRows="False"
+                                IsReadOnly="True"
+                                RowStyle="{StaticResource {x:Type DataGridRow}}"  >
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding SupportCallID}" />
+                                    <DataGridTextColumn Header="Assign To" Binding="{Binding AssignTo}" />
+                                    <DataGridTextColumn Header="Number" Binding="{Binding Number}" />
+                                    <DataGridTextColumn Header="Impact" Binding="{Binding Impact}" />
+                                    <DataGridTextColumn Header="Urgency" Binding="{Binding Urgency}" />
+                                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
+                                    <DataGridTextColumn Header="Types" Binding="{Binding Types}" />
+                                    <DataGridTextColumn Header="Open By" Binding="{Binding OpenBy}" />
+                                    <DataGridTextColumn Header="Open Date" Binding="{Binding OpenDate}" />
+                                    <DataGridTextColumn Header="Days" Binding="{Binding Days}" />
+                                    <DataGridTextColumn Header="Summary" Binding="{Binding Summary}" />
+                                    <DataGridTextColumn Header="Organization" Binding="{Binding Organization}" />
+                                    <DataGridTextColumn Header="Groups" Binding="{Binding Groups}" />
+                                </DataGrid.Columns>
+                                <DataGrid.ContextMenu>
+                                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="Select Registro"
+Command="{Binding SelectCommand}"
+CommandParameter="{Binding SelectedItem}" />
+                                    </ContextMenu>
+                                </DataGrid.ContextMenu>
+                            </DataGrid>-->
+
+                        </Border>
+                        <!--DATAGRID-->
+
+                    </ge:ResponsiveGrid>
+                </StackPanel>
+            </md:Card>
+        </ScrollViewer>
+
     </Grid>
 </Window>
+
+<!--<ContextMenu>
+    <MenuItem Header="Select Registro" 
+    Command="{Binding SelectCommand}"
+CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+</ContextMenu>-->
+
+<!--<MenuItem Header="Select Registro" 
+          Command="{Binding SelectCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+          CommandParameter="{Binding}" />-->

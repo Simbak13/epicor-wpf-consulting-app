@@ -8,6 +8,9 @@ using System.Collections.ObjectModel;
 using System;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Windows.Input;
+using System.Windows;
+using GalaSoft.MvvmLight.Command;
 
 namespace Epicor_Wpf_Analizer.ViewModel
 {
@@ -41,14 +44,24 @@ namespace Epicor_Wpf_Analizer.ViewModel
             set { totalRecords = value; RaisePropertyChanged(nameof(TotalRecords)); }
         }
 
+        private SupportCallOpen selectedCall;
+        public SupportCallOpen SelectedCall
+        {
+            get { return selectedCall; }
+            set
+            {
+                selectedCall = value;
+                RaisePropertyChanged(nameof(SelectedCall));
+            }
+        }
 
+        public ICommand SelectCommand { get; private set; }
 
         public StartPageViewModel()
         {
             TotalRecords = "Total Records : 0";
-           // QueueList = new ObservableCollection<SupportCallOpen>();
             service = new QueueServices();
-
+            SelectCommand = new RelayCommand<SupportCallOpen>(SelectCallRow);
             Task.Run(async () =>
             {
               await OnStartLoadDataAsync();
@@ -56,26 +69,20 @@ namespace Epicor_Wpf_Analizer.ViewModel
 
         }
 
-        private async Task OnStartLoadDataAsync()
+         private async Task OnStartLoadDataAsync()
         {
             try
             {
               
-                var supportList = await service.ListOpenQueuesAsync();
-                await Task.Delay(5000);
+                var supportList = await service.ListOpenQueuesAsync(null,100);
                 if (supportList != null) 
-                { 
-                    TotalRecords=$"Total Records : {supportList.Count}" ;
-                    QueueList = new ObservableCollection<SupportCallOpen>(supportList);
-                    //await Application.Current.Dispatcher.InvokeAsync(() =>
-                    //{
+                {
 
-
-                    //    foreach (var item in supportList)
-                    //    {
-                    //        QueueList.Add(item);
-                    //    }
-                    //});
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        TotalRecords = $"Total Records : {supportList.Count}";
+                        QueueList = new ObservableCollection<SupportCallOpen>(supportList);
+                    });
                 }
 
 
@@ -83,6 +90,13 @@ namespace Epicor_Wpf_Analizer.ViewModel
             {
                 Debug.WriteLine($"Execption {ex.Message}");
             }
+        }
+
+        private void SelectCallRow(SupportCallOpen call)
+        {
+             SelectedCall = call;
+
+            MessageBox.Show(SelectedCall.SupportCallID);
         }
     }
 }

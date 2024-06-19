@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static MaterialDesignThemes.Wpf.Theme;
 
 namespace Epicor_Wpf_Analizer.Pages
 {
@@ -23,5 +24,7 @@ namespace Epicor_Wpf_Analizer.Pages
         {
             InitializeComponent();
         }
+
+       
     }
 }
